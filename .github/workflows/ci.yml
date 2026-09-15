@@ -1,0 +1,13 @@
+name: CCH-OS CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  repository-foundation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate repository foundation
+        run: bash tests/architecture/validate_foundation.sh
