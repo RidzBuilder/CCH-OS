@@ -1,135 +1,141 @@
-# CCH-OS Codex Execution Plan v0.1
+# CCH-OS Codex Execution Plan v0.2
 
 ## Objective
 
-Translate the accepted repository configuration into executable implementation incrementally, preserving architectural boundaries and producing evidence at every stage.
+Translate the recovered CCH-OS Architecture Specification v1.0 into an executable repository while preserving semantic boundaries, evidence discipline, and gated progression.
 
-## Stage 0 — Repository foundation
+This plan is an implementation execution spine. It does not replace or lock the architecture.
 
-Create the configured topology, package/module boundaries, test harness, documentation links, and CI architecture checks.
+## Execution rule
 
-**Exit:** repository structure exists and prohibited dependency checks are executable.
+Each stage follows:
 
-## Stage 1 — L0 semantic foundation
+Inspect → Implement → Test → Evidence → Exit Audit → PASS → Next Stage
 
-Implement:
+FAIL or BLOCKED stops forward progression until resolved.
 
-- component;
-- structure;
-- composition;
+A repository skeleton is never treated as proof of architectural validity.
+
+## Stage 0 — Repository Foundation
+
+Establish repository topology, implementation boundaries, validation entrypoint, CI architecture guard, and documentation linkage.
+
+**Exit:** topology and executable foundation guard exist; CI can execute the foundation validation.
+
+## Stage 1 — Semantic & Contract Foundation
+
+Implement L0 semantic/structural primitives and protected distinctions:
+
+- component / structure / composition;
 - context;
-- reference;
-- identity;
-- ID;
-- version.
+- identity / ID / reference / version;
+- core semantic contracts.
 
-**Exit:** semantic contracts compile and distinction tests pass.
+**Exit:** contract tests prove the protected distinctions.
 
-## Stage 2 — L1 core runtime
+## Stage 2 — Core Runtime
 
-Implement:
+Implement runtime lifecycle and execution primitives required by the architecture.
 
-- state model;
-- state transitions;
-- event model;
-- lifecycle;
-- history;
-- persistence interfaces;
-- recovery primitives.
+**Exit:** runtime contracts execute without violating L0 boundaries.
 
-**Exit:** authoritative state mutation and state/event/history tests pass.
+## Stage 3 — State / Event / History / Persistence
 
-## Stage 3 — governance + orchestration foundations
+Implement authoritative state, state transitions, events, history, persistence abstraction, and representation/storage separation.
 
-Implement:
+**Exit:** state/event/history separation and persistence-independence tests pass.
 
-- authorization contract;
-- decision boundary;
-- action request;
-- agent runtime contract;
-- orchestration interfaces.
+## Stage 4 — Orchestration & Workflow
 
-**Exit:** unauthorized execution is rejected and authority cannot be inferred from capability.
+Implement orchestration and workflow/task/step/action boundaries, dependencies, branching/parallelism, retry, pause/resume.
 
-## Stage 4 — workflow/task runtime
+**Exit:** workflow execution and recovery tests pass.
 
-Implement:
+## Stage 5 — Agent / Capability / Authority
 
-- workflow;
-- task;
-- step;
-- action request;
-- dependencies;
-- branching/parallelism;
-- retry;
-- pause/resume.
+Implement agent runtime, capability boundaries, decision/authorization separation, and authority controls.
 
-**Exit:** workflow tests and recovery tests pass.
+**Exit:** unauthorized execution is rejected and capability does not imply authority.
 
-## Stage 5 — capability/tool/adapter layer
+## Stage 6 — Adapter / Tool / Provider
 
-Implement:
+Implement capability registry, tool contracts, adapter contracts, compatibility checks, and external-provider boundaries.
 
-- capability contract;
-- registry;
-- tool contract;
-- adapter contract;
-- provider boundary;
-- compatibility checks.
+**Exit:** provider replacement is possible without changing core semantic contracts.
 
-**Exit:** provider replacement can occur without changing core semantic contracts.
+## Stage 7 — Governance / Security / Failure / Recovery
 
-## Stage 6 — domain services
+Implement governance controls, authorization, security boundaries, failure transparency, recovery authority, retry/resume semantics.
 
-Add content-domain services only through stable runtime/capability contracts.
+**Exit:** failure cannot silently become success and recovery authority is explicit.
 
-Potential domains from the architecture include product, content, storyboard, generation, publishing, and analytics.
+## Stage 8 — Observability / Provenance / Lineage
 
-**Exit:** domain vertical slice runs without violating dependency rules.
+Implement trace, history/audit separation, provenance, lineage, and evidence propagation.
 
-## Stage 7 — application experience
+**Exit:** source-to-derived lineage and observability separation are test-proven.
 
-Add API/UI/application orchestration as a consumer of the core system.
+## Stage 9 — Experimental Domain Workflow
 
-**Exit:** application cannot bypass runtime/governance boundaries.
+Introduce the first representative CCH-OS content-domain workflow through stable contracts.
 
-## Stage 8 — vertical proof
+Potential domain scope may include product, content, storyboard, generation, publishing, or analytics, subject to implementation authorization.
 
-Build one representative end-to-end CCH-OS workflow.
+**Exit:** domain vertical slice respects dependency and governance boundaries.
 
-Required evidence:
+## Stage 10 — End-to-End Experimental Run
+
+Execute one complete representative workflow:
 
 input → context → observation → interpretation/evaluation → decision → authorization → action → result → state update → event/history → output.
 
-## Stage 9 — validation
+**Exit:** executable evidence exists for the complete path.
 
-Run the complete validation matrix and record failures rather than masking them.
+## Stage 11 — Adversarial / Invariant Validation
 
-## Stage 10 — expansion
+Run the complete implementation validation matrix, including semantic separation, authority, workflow, adapter compatibility, persistence independence, recovery, provenance/lineage, extensibility, and end-to-end behavior.
 
-Only after the first vertical slice is proven:
+Failures remain evidence and are not masked.
+
+**Exit:** validation evidence is recorded for every applicable gate.
+
+## Final Experimental Implementation Acceptance
+
+Acceptance requires:
+
+- required stages passed;
+- executable evidence exists;
+- no unresolved critical architectural contradiction;
+- implementation preserves protected semantic boundaries;
+- failures and limitations are documented;
+- no production-readiness claim is made without separate evidence.
+
+Final Experimental Acceptance is not equivalent to production readiness.
+
+## Expansion Gate
+
+Only after the first experimental implementation is accepted:
 
 - additional agents;
 - additional workflows;
 - additional capabilities;
 - additional adapters;
 - additional domains;
-- optional candidate architecture such as ECLB-01 after its own validation/adoption gate.
+- optional candidate architecture such as ECLB-01, only after its own validation/adoption gate.
 
-## Codex behavior
+## Codex execution behavior
 
-Codex should work in small, reviewable increments.
+For every increment:
 
-For each increment:
+1. inspect the current repository;
+2. identify the governing architecture contract;
+3. identify affected layer/module;
+4. implement the minimum necessary change;
+5. add executable tests;
+6. run available validation;
+7. record files changed;
+8. record invariants exercised;
+9. record evidence and unresolved risks;
+10. stop when an architectural contradiction is discovered.
 
-1. inspect current repository;
-2. identify governing contract;
-3. implement minimal change;
-4. add tests;
-5. run tests;
-6. report files changed;
-7. report architectural invariants exercised;
-8. report unresolved risks;
-9. stop if an architectural contradiction is discovered.
-
-Do not generate the entire OS in one unreviewed pass.
+Codex is an implementation executor, not the architectural authority.
