@@ -16,9 +16,19 @@ class AlternateState(StateStore):
         super().__init__()
         self.backend="alternate"
 
+class AlternateEnvironment:
+    def __init__(self):
+        self.counter=0
+    def apply(self, action):
+        if action["name"]=="increment":
+            self.counter += action["amount"]
+        return {"status":"success"}
+    def observe(self):
+        return {"counter":self.counter}
+
 class AgnosticSwapTests(unittest.TestCase):
-    def run_with(self, adapter, state=None):
-        rt=Runtime(adapter=adapter, state=state)
+    def run_with(self, adapter, state=None, environment=None):
+        rt=Runtime(adapter=adapter, state=state, environment=environment)
         result=rt.execute({"target_counter":2})
         return result, rt.state.get("observation"), rt.memory.all()
 
@@ -36,13 +46,7 @@ class AgnosticSwapTests(unittest.TestCase):
         self.assertGreaterEqual(len(memory),2)
 
     def test_environment_swap_preserves_contract(self):
-        class AlternateEnvironment:
-            def __init__(self): self.counter=0
-            def apply(self, action):
-                if action["name"]=="increment": self.counter += action["amount"]
-                return {"status":"success"}
-            def observe(self): return {"counter":self.counter}
-        result, observation, _=self.run_with(ProviderA(), StateStore())
+        result, observation, _=self.run_with(ProviderA(), environment=AlternateEnvironment())
         self.assertEqual(result["status"],"success")
         self.assertEqual(observation["counter"],2)
 
