@@ -35,13 +35,13 @@ class ChainTests(unittest.TestCase):
         self.assertEqual(result["error"],"unauthorized")
 
     def test_environment_failure_produces_recovery_evidence(self):
-        env=ControlledEnvironment(counter=0, fail_on="increment")
+        env=ControlledEnvironment(counter=0, fail_on="increment", fail_once=True)
         rt=Runtime(environment=env)
         result=rt.execute({"target_counter":1})
-        self.assertEqual(result["status"],"failure")
-        self.assertEqual(result["error"],"environment_failure")
-        self.assertIn("recovery", result)
+        self.assertEqual(result["status"],"success")
+        self.assertEqual(result["verification"]["verified"],True)
         self.assertTrue(any(e.get("stage")=="recovery" for e in rt.trace.events))
+        self.assertTrue(any(e.get("stage")=="recovery_resume" for e in rt.trace.events))
 
 if __name__=="__main__":
     unittest.main()
