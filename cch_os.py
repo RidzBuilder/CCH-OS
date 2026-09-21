@@ -1,4 +1,4 @@
-"""CCH-OS runtime with explicit AAFA conformance path."""
+"""CCH-OS runtime with explicit AAFA conformance and replaceable boundaries."""
 from runtime.state.store import StateStore
 from runtime.events.bus import EventBus
 from runtime.history.ledger import HistoryLedger
@@ -14,12 +14,13 @@ from adapters.base import Adapter
 from observability.trace import Trace
 
 class Runtime:
-    """Backward-compatible single execution surface."""
-    def __init__(self, authorized=True, environment=None, adapter=None):
-        self.state=StateStore()
-        self.events=EventBus()
-        self.history=HistoryLedger()
-        self.memory=MemoryStore()
+    """Runtime composition root; semantic behavior is independent of concrete adapters/storage."""
+    def __init__(self, authorized=True, environment=None, adapter=None,
+                 state=None, memory=None, events=None, history=None):
+        self.state=state or StateStore()
+        self.events=events or EventBus()
+        self.history=history or HistoryLedger()
+        self.memory=memory or MemoryStore()
         self.governance=GovernancePolicy()
         self.trace=Trace()
         self.authorized=authorized
