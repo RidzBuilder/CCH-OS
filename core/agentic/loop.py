@@ -71,7 +71,15 @@ class AgentLoop:
                 recovery_result=self.recovery.recover(environment_result, self.state.snapshot())
                 self.trace.record({"stage":"recovery","cycle":cycle,"value":recovery_result})
                 self.history.append({"stage":"recovery","cycle":cycle,"value":recovery_result})
-                return {"status":"failure","error":"environment_failure","recovery":recovery_result}
+                if not recovery_result.get("retry_allowed"):
+                    return {"status":"failure","error":"environment_failure","recovery":recovery_result}
+                environment_result=self.environment.apply(decision)
+                observation=self.environment.observe()
+                self.trace.record({"stage":"recovery_resume","cycle":cycle,"value":observation})
+                self.history.append({"stage":"recovery_resume","cycle":cycle,"value":observation})
+                self.state.set("observation", observation)
+                if environment_result.get("status") != "success":
+                    return {"status":"failure","error":"recovery_failed","recovery":recovery_result}
 
             evaluation={"target":goal.get("target_counter"),"observed":observation.get("counter")}
             self.trace.record({"stage":"evaluation","cycle":cycle,"value":evaluation})
