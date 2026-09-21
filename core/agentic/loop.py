@@ -1,8 +1,4 @@
-"""Canonical AAFA agent loop.
-
-GOAL → STATE → DECISION → CAPABILITY → ACTION → ENVIRONMENT → OBSERVATION
-→ EVALUATION → STATE UPDATE → RE-DECISION → VERIFICATION → TERMINATION
-"""
+"""Canonical AAFA agent loop with explicit verification, recovery and termination."""
 class AgentLoop:
     def __init__(self, *, state, memory, environment, capability, adapter,
                  governance, verifier, recovery, trace, history, events,
@@ -48,7 +44,12 @@ class AgentLoop:
                 return result
 
             action=self.capability.invoke({"name":decision["name"],"amount":decision["amount"]})
-            if not self.governance.authorize_execution(authorized, action):
+            if action.get("status") != "success":
+                result={"status":"failure","error":"capability_contract_violation","cycle":cycle}
+                self.events.emit({"type":"capability_denied","payload":result})
+                return result
+
+            if not self.governance.authorize_execution(authorized, decision):
                 result={"status":"failure","error":"unauthorized","cycle":cycle}
                 self.events.emit({"type":"execution_denied","payload":result})
                 self.history.append({"stage":"result","value":result})
@@ -67,13 +68,15 @@ class AgentLoop:
             self.state.set("observation", observation)
 
             if environment_result.get("status") != "success":
-                recovery=self.recovery.recover(environment_result, self.state.snapshot())
-                self.trace.record({"stage":"recovery","cycle":cycle,"value":recovery})
-                self.history.append({"stage":"recovery","cycle":cycle,"value":recovery})
-                return {"status":"failure","error":"environment_failure","recovery":recovery}
+                recovery_result=self.recovery.recover(environment_result, self.state.snapshot())
+                self.trace.record({"stage":"recovery","cycle":cycle,"value":recovery_result})
+                self.history.append({"stage":"recovery","cycle":cycle,"value":recovery_result})
+                return {"status":"failure","error":"environment_failure","recovery":recovery_result}
 
             evaluation={"target":goal.get("target_counter"),"observed":observation.get("counter")}
             self.trace.record({"stage":"evaluation","cycle":cycle,"value":evaluation})
             self.history.append({"stage":"evaluation","cycle":cycle,"value":evaluation})
 
-        return {"status":"failure","error":"iteration_limit","cycle":self.max_cycles}
+        result={"status":"failure","error":"iteration_limit","cycle":self.max_cycles}
+        self.events.emit({"type":"termination","payload":result})
+        return result
