@@ -4,10 +4,16 @@ from adapters.base import Adapter
 from runtime.state.store import StateStore
 
 class ProviderA(Adapter):
+    def __init__(self):
+        super().__init__("provider-a")
+
     def execute(self, request):
         return {"status":"success","provider":"A","request":request}
 
 class ProviderB(Adapter):
+    def __init__(self):
+        super().__init__("provider-b")
+
     def execute(self, request):
         return {"status":"success","provider":"B","request":request}
 
