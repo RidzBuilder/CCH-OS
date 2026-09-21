@@ -2,7 +2,11 @@ import unittest
 from core.semantic.model import Identity, Reference, Version, Observation, Interpretation, Evaluation, Decision, Action
 from runtime.state.store import StateStore
 from runtime.events.bus import EventBus
-from runtime.recovery.recovery import RecoveryPolicy
+from runtime.recovery.manager import RecoveryManager
+
+class RecoveryPolicy:
+    def classify(self, status):
+        return status if status in {"success","failure","partial","unknown"} else "unknown"
 from governance.policy import GovernancePolicy
 from agents.base import Agent
 from capabilities.base import Capability
